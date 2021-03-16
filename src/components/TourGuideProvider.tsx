@@ -85,8 +85,13 @@ export const TourGuideProvider = ({
 
   const moveToCurrentStep = async () => {
     const size = await currentStep!.target.measure()
-    if (isNaN(size.width) || isNaN(size.height) || isNaN(size.x) || isNaN(size.y)) {
-      return;
+    if (
+      isNaN(size.width) ||
+      isNaN(size.height) ||
+      isNaN(size.x) ||
+      isNaN(size.y)
+    ) {
+      return
     }
     await modal.current?.animateMove({
       width: size.width + OFFSET_WIDTH,
@@ -98,13 +103,14 @@ export const TourGuideProvider = ({
 
   const setCurrentStep = (step?: IStep) =>
     new Promise<void>((resolve) => {
-      updateCurrentStep(() => {
-        eventEmitter.emit('stepChange', step)
-        resolve()
-        return step
-      })
+      eventEmitter.emit('stepChange', step)
+      setTimeout(() => {
+        updateCurrentStep(() => {
+          resolve()
+          return step
+        })
+      }, 300)
     })
-
   const getNextStep = (step: IStep | undefined = currentStep) =>
     utils.getNextStep(steps!, step)
 
